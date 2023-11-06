@@ -1,0 +1,77 @@
+____________INTRODUCTION____________________
+React : c'est n'est qu un bibliotheque(librairie); on doit importer ou faire npm install pour chaque composante
+Nexjs : c'est un framework, le site est deja la
+
+NextJS => clie ou serveur, c'est deja SEO
+
+-Rendu client
+utilisateur (requete)->  serveur(HTLM + JS ) ->utilisateur ->Rendu page web (affichage)
+
+--Avantange
+
+1.Rendu serveur
+utilisateur (requete)-> serveur(Traite la demande) ->Rendu page web (affichage)
+Ca sert a SEO
+les robots de google ont du mal a traiter les page rendu client
+
+2.Les routings ont meme nom que le fichier
+
+3.Code splitting: diviser grand code en  petite
+
+
+
+____________INSTALLATION__________________
+
+npx create-next-app@latest
+
+ou 
+npx create next-app
+
+React est un librairie
+NextJS est un framework
+
+N utilise mon code pour fonctionner (N est FRAMEWORK)
+Mon code execute N (N est Librairie)
+
+
+
+_____________DECORTIQUE_________________
+
+Dans la app
+layout.js:
+	le point d'entre de l'application
+	c'est le parent
+	Le reste sont tous des enfants
+	
+page.js
+	La route de la page d'accueil
+	avec la routing /
+	c'est uin composant serveur
+	pour modifier en composant client mettre "use client " au debut de la page
+
+	
+___________PREMIER PAGE____________
+
+es7 + react en installer dans le visual code
+
+rafce : c'est le raccourcie pour genere le code
+
+exemple , mettre app/contact/page.js dans le route /contact
+				 app/CV/page.js dans la route /cv
+
+pour utiliser useState et useEffect mettre "use client"
+
+
+____________NETTOYAGE PAR USEEFFECT_______
+
+useEffect( ()={
+    return ()=>{
+        console.log('le composant est demonte, alors nettoyer')
+    }
+},[] )
+
+
+_______________API_________________________
+lien fake api https://dumbstockapi.com/stock?exchanges=NYSE
+
+installer npm install axios

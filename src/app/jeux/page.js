@@ -22,8 +22,8 @@ const jeux = () => {
     <>
       <h1>JEUX {number}</h1>
       <p>voici le jeux que vous avez attendu</p>
-      <button onClick={()=>increment()}> Increment</button> <br/>
-      <button onClick={()=>decrement()}> Decrement</button> <br/>
+      <button  className='btn-primary btn' onClick={()=>increment()}> Increment</button> <br/>
+      <button className='btn-primary btn' onClick={()=>decrement()}> Decrement</button> <br/>
     </>
   )
 }

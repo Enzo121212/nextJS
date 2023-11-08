@@ -9,6 +9,7 @@ export default function Home() {
      <Link href="/cv">cv</Link><br/>
      <Link href="/jeux">JEux</Link><br/>
      <Link href="/apiTest">Test API</Link><br/>
+     <Link href="/person">Person</Link><br/>
     </main>
   )
 }

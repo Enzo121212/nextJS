@@ -19,6 +19,9 @@ les robots de google ont du mal a traiter les page rendu client
 3.Code splitting: diviser grand code en  petite
 
 
+layout.js est le point d entre
+
+
 
 ____________INSTALLATION__________________
 

@@ -39,13 +39,26 @@ ______________GROUPE ROUTE_______________________
 
 
 _______________LOADING_________________________________
-A revoir
 app/contact/loading.js
+- La fonction doit etre en asynchrone
+  <h1>Liste des noms presents</h1>
+    <Suspense fallback={<Loading/>}>
+        <Todos/>
+    </Suspense>
+
+-seulement dans la partie Todos reprend le loading
+
+
+
 
 
 ______________GESTION ERREUR__________________________
-A revoir
-app/contact/error.js
+
+- app/contact/error.js
+- fonctionne seulement dans le page.js 
+- throw new Error("Diso fito tsy maha mora") pour avoir l'erreur
+
+
 
 __________________ROUTE PARRALLEE___________________
 - mettre plusieurs page dans la meme mise en page
@@ -62,3 +75,215 @@ __________________ROUTE PARRALLEE___________________
         {projet}
  
  -Redemarrer le server
+
+
+ _________________ROUTES D INTERCEPTION_________________
+ - il se fait dans l'affichage image
+ - interception route sasn modifier la route
+ - exemple j'affiche une image dans un modal avec la route feed/photo/13
+    alors le route ne change pas sur le bronze il reste /feed mais non pas feed/photo/13
+
+ - il suffit de faire (.) meme niveau (..) niveau superieur (..)(..)2niveau au dessu (...)dans l'app
+ - exemple de dossier (..)photo/[id]/page.js
+
+-A revoir
+
+
+
+_________________HANDLE ROUTE_______________________
+- il n'est disponible qu'a l interirue /app
+- il est dans /app/api/route.js mais il peut etre imbrique comme   /app/api/[user]/route.js
+- il est utilise pour la soumission d'un formulaire
+- Seules les methodes GET, POST, PUT, PATCH, DELETE, HEAD et OPTIONS sont prise en charge
+- A part ces methodes, le fonction vont avoir d'erreur
+- ils sont mise en caches automatique
+
+
+export async function GET() {
+  const res = await fetch('https://data.mongodb-api.com/...', {
+    headers: {
+      'Content-Type': 'application/json',
+      'API-Key': process.env.DATA_API_KEY,
+    },
+  })
+  const data = await res.json()
+ 
+  return Response.json({ data })
+}
+
+-desactive la mise en cache
+
+export async function GET(request) {
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+  const res = await fetch(`https://data.mongodb-api.com/product/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'API-Key': process.env.DATA_API_KEY,
+    },
+  })
+  const product = await res.json()
+ 
+  return Response.json({ product })
+}
+
+- pour le post 
+
+export async function POST() {
+  const res = await fetch('https://data.mongodb-api.com/...', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'API-Key': process.env.DATA_API_KEY,
+    },
+    body: JSON.stringify({ time: new Date().toISOString() }),
+  })
+ 
+  const data = await res.json()
+ 
+  return Response.json(data)
+}
+
+- On peur revalider chaque 60 seconde
+
+export async function GET() {
+  const res = await fetch('https://data.mongodb-api.com/...', {
+    next: { revalidate: 60 }, // Revalidate every 60 seconds
+  })
+  const data = await res.json()
+ 
+  return Response.json(data)
+}
+
+-vous pouvez mettre de coockis(il est seulement en lectur seule en GET)
+
+import { cookies } from 'next/headers'
+ 
+export async function GET(request) {
+  const cookieStore = cookies()
+  const token = cookieStore.get('token')
+ 
+  return new Response('Hello, Next.js!', {
+    status: 200,
+    headers: { 'Set-Cookie': `token=${token}` },
+  })
+}
+
+-vous pouvez mettre un abstraction 
+export async function GET(request) {
+  const token = request.cookies.get('token')
+}
+
+
+-REDIRECTION 
+import { redirect } from 'next/navigation'
+ 
+export async function GET(request) {
+  redirect('https://nextjs.org/')
+}
+
+-   RECUPERER LES PARAMETRES URL
+
+export function GET(request) {
+  const searchParams = request.nextUrl.searchParams
+  const query = searchParams.get('query')
+  // query is "hello" for /api/search?query=hello
+}
+
+-  LIRE LES DONNES DE FORMULAIRE
+
+export async function POST(request) {
+  const formData = await request.formData()
+  const name = formData.get('name')
+  const email = formData.get('email')
+  return Response.json({ name, email })
+}
+
+- DEFINIR LES CORS 
+
+export async function GET(request) {
+  return new Response('Hello, Next.js!', {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  })
+}
+
+
+__________________MIDDLEWARE_______________________
+
+- Le middleware vous permet d'exécuter du code avant qu'une requête ne soit terminée.
+- Le middleware s’exécute avant que le contenu mis en cache et les itinéraires ne correspondenT
+- middleware se trouve dans src/middleware.js
+
+import { NextResponse } from 'next/server'
+ 
+// This function can be marked `async` if using `await` inside
+export function middleware(request) {
+  return NextResponse.redirect(new URL('/home', request.url))
+}
+ 
+// See "Matching Paths" below to learn more
+export const config = {
+  matcher: '/about/:path*',
+}
+
+- MATCHER vous permet de filtrer le Middleware pour qu'il s'exécute sur des chemins spécifiques.
+- vous pouvez mettre un seule chemin ou  beaucuop
+- matcher commence toujours par /
+- '/about/:path' => about/1 ou about/2 mais non pas about/1/2
+- /about/:path* => about/1 ou  about/1/1 * signifi beaoucoup
+- /about/(.*) => /about/:path*
+
+export const config = {
+  matcher: ['/about/:path*', '/dashboard/:path*'],
+}
+
+
+_________________PROJECT ORGANISATION_________________________
+
+- app/component/button.js (non routable)
+- app/dashboard/page.js (routable avec /dashboard)
+- app/dashboard/nav.js (non routable)
+
+- app/api/db.js(non routable)
+- app/api/route.js (routable avec /api)
+- app/api/person/route.js (routable avec /api/person)
+
+- DOSSIER PRIVE
+- Des dossiers privés peuvent être créés en préfixant un dossier avec un trait de soulignement :_folderName
+- exemple : _component ou _lib ou _aute
+- Ca veut dire que le prive n'est pas routable avec ces sous_dossier meme s'il y a page.js
+- - app/_dashboard/page.js (non routable)
+
+- Les avantanges dossierw prive
+    - tri et regroupement fichier
+    - separer logique interface utilisateur et le routage 
+    - eviter le conflits des noms
+
+- GROUPE DE ROUTE 
+    - il s'agit de ne pas inclure le nom de dossier en mettant parenthese (folderName)
+    - ex: app/(admin)/person/page.js (/person) 
+    - ici admin ne pas prise en compte
+
+- faite votre /components ou lib/ hors de /app cad au racine de projet
+- /app conserve app uniquement pour les routages
+
+
+__________________INTERNALISATION__________________
+- il s'agit du langue prefere de l'utilisateur
+- en-US : English
+- middleware.js
+
+import { match } from '@formatjs/intl-localematcher'
+import Negotiator from 'negotiator'
+ 
+let headers = { 'accept-language': 'en-US,en;q=0.5' }
+let languages = new Negotiator({ headers }).languages()
+let locales = ['en-US', 'nl-NL', 'nl']
+let defaultLocale = 'en-US'
+ 
+match(languages, locales, defaultLocale) // -> 'en-US'

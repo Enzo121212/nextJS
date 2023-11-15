@@ -2,8 +2,10 @@
 import React, { useEffect,useState } from 'react'
 import axios from 'axios'
 import { Suspense } from 'react'
-import todos from './Todos'
-
+import Todos from './Todos'
+import Loading from './loading'
+import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
+import Error from './error'
 
 
 const  apiTest = () => {
@@ -27,11 +29,13 @@ const  apiTest = () => {
 
     // },[])
 
-
   return (
     <>
-        <todos/>
         <h1>Liste des noms presents</h1>
+        <Suspense fallback={<Loading/>}>
+              <Todos/>
+        </Suspense>
+
     </>
   )
 }

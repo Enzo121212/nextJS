@@ -10,6 +10,7 @@ export default function Home() {
      <Link href="/jeux">JEux</Link><br/>
      <Link href="/apiTest">Test API</Link><br/>
      <Link href="/person">Person</Link><br/>
+     <Link href="/photo">Photo</Link><br/>
     </main>
   )
 }

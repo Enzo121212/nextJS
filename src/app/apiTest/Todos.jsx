@@ -4,6 +4,7 @@ import axios from 'axios'
 
 const todos = async() => {
 const todos = await getData()
+console.log(todos)
   return (
     <>
     <div>Ma variable</div>
@@ -30,6 +31,11 @@ const todos = await getData()
 export default todos
 
 async function getData(){
-    const res =  await axios.get("https://dumbstockapi.com/stock?exchanges=NYSE ")
+    const res =  await axios.get("https://dumbstockapi.com/stock?exchanges=NYSE")
+
+    // try{
+    // }catch(error){
+    //     throw new error(error)
+    // }
     return res.data;
 }
